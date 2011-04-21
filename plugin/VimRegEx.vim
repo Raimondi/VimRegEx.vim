@@ -949,7 +949,9 @@ let s:lpat=''
 let s:rline=0
 
 function! s:execRegex()
+	" Where are we now?
 	let caller=winnr()
+	" Switch to regex window.
 	execute bufwinnr(g:VimrexFile).'wincmd w'
 	let pattern=getline('.')
 	if pattern == ''
@@ -966,6 +968,7 @@ function! s:execRegex()
 			let ans=input("This could be a comment line, execute? ","n")
 			echohl None
 			if tolower(ans[0]) == 'n'
+				" Go back to initial window and abort.
 				execute caller.'wincmd w'
 				return
 			endif
@@ -1796,6 +1799,7 @@ function! s:usage()
 	if bufwinnr(g:VimrexUsageFile) != -1
 		return
 	endif
+	let s:thisScriptContent = readfile(s:thisScript)
 	echohl WarningMsg
 	echomsg 'Generating Usage Document...'
 	echohl None
@@ -1831,128 +1835,136 @@ function! s:usage()
 	setlocal noreadonly modifiable nonumber noswapfile
 	execute 'resize '.&lines
 	execute 'vertical resize '.&columns
-	call append(0,PadField('c',76,s:myName.": Vim Regular Expression Developer Plugin"))
-	call s:doUsageSection('ONE')
-	call append(line('$'),PadField('c',76,s:myName.": Command Summary"))
-	call append(line('$'),"")
-	call append(line('$'),Exec."Execute Regular Expression")
-	call append(line('$'),Anlz."Analyze Regular Expression")
-	call append(line('$'),Top."Changes to .Vim Regular Expression Specification Window")
-	call append(line('$'),Btm."Changes to .Vim Regular Expression Search Source Window")
-	call append(line('$'),Ctr."Changes to .Vim Regular Expression Result Window")
-	call append(line('$'),CLS."Clear .Vim Regular Expression Specification Window")
-	call append(line('$'),DRslt."Clear .Vim Regular Expression Result Window")
-	call append(line('$'),DSrc."Clear .Vim Regular Expression Search Source Window")
-	call append(line('$'),RdSrc."Read File into .Vim Regular Expression Search Source Window")
-	call append(line('$'),RdRex."Read File into .Vim Regular Expression Specification Window")
-	call append(line('$'),QQ."Open Usage Window (display this file)")
-	call append(line('$'),QL."Close Usage Window")
-	call append(line('$'),QC."Collapse Usage Window")
-	call append(line('$'),QP."Expand Usage Window")
-	call append(line('$'),ZHV."Generate HTML File of Regular Expression Window")
-	call append(line('$'),ZHS."Generate HTML File of Search Source Window")
-	call append(line('$'),ZHU."Generate HTML File of Usage Window")
-	call append(line('$'),ZHR."Generate HTML File of Results Window")
-	call append(line('$'),ZHA."Generate HTML File of All But Usage Window")
-	call append(line('$'),ZTV."Generate TEXT (.txt) File of Regular Expression Window")
-	call append(line('$'),ZTS."Generate TEXT (.txt) File of Search Source Window")
-	call append(line('$'),ZTU."Generate TEXT (.txt) File of Usage Window")
-	call append(line('$'),ZTR."Generate TEXT (.txt) File of Results Window")
-	call append(line('$'),ZTA."Generate TEXT (.txt) File of All But Usage Window")
-	call append(line('$'),Exit."Exit ".s:myName." (close all windows)")
-	call s:doUsageSection('TWO')
-	call append(line('$'),PadField('c',76,s:myName.": Synopsis of Use"))
-	call s:doUsageSection('THREE')
-	call append(line('$'),PadField('c',76,g:VimrexAnlz))
-	call s:doUsageSection('FOUR')
-	call append(line('$'),PadField('c',76,g:VimrexExec))
-	call s:doUsageSection('FIVE')
-	call append(line('$'),PadField('c',76,s:myName.": Global Variables"))
-	call append(line('$')," ")
-	call append(line('$'),PadField('l',20,'g:VimrexExec')."mapping sequence for executing regular expression")
-	call append(line('$'),PadField('l',20,'g:VimrexAnlz')."mapping sequence for analyzing regular expression")
-	call append(line('$'),PadField('l',20,'g:VimrexTop')."mapping sequence for goto top window")
-	call append(line('$'),PadField('l',20,'g:VimrexBtm')."mapping sequence for goto bottom window")
-	call append(line('$'),PadField('l',20,'g:VimrexCtr')."mapping sequence for goto center window")
-	call append(line('$'),PadField('l',20,'g:VimrexCLS')."mapping sequence for clearing top window")
-	call append(line('$'),PadField('l',20,'g:VimrexDSrc')."mapping sequence for clearing bottom window")
-	call append(line('$'),PadField('l',20,'g:VimrexDRslt')."mapping sequence for clearing center window")
-	call append(line('$'),PadField('l',20,'g:VimrexRdSrc')."mapping sequence to read file into bottom window")
-	call append(line('$'),PadField('l',20,'g:VimrexRdRex')."mapping sequence to read file into top window")
-	call append(line('$'),PadField('l',20,'g:VimrexQQ')."mapping sequence to open display of this file")
-	call append(line('$'),PadField('l',20,'g:VimrexQL')."mapping sequence to close display of this file")
-	call append(line('$'),PadField('l',20,'g:VimrexQC')."mapping sequence to collapse display of this file")
-	call append(line('$'),PadField('l',20,'g:VimrexQP')."mapping sequence to expand display of this file")
-	call append(line('$'),PadField('l',20,'g:VimrexZHV')."mapping sequence to generate Regular Expression HTML file")
-	call append(line('$'),PadField('l',20,'g:VimrexZHS')."mapping sequence to generate Source Search HTML file")
-	call append(line('$'),PadField('l',20,'g:VimrexZHU')."mapping sequence to generate Usage HTML file")
-	call append(line('$'),PadField('l',20,'g:VimrexZHR')."mapping sequence to generate Results HTML file")
-	call append(line('$'),PadField('l',20,'g:VimrexZHA')."mapping sequence to generate All But Usage HTML file")
-	call append(line('$'),PadField('l',20,'g:VimrexZTV')."mapping sequence to generate Regular Expression TEXT file")
-	call append(line('$'),PadField('l',20,'g:VimrexZTS')."mapping sequence to generate Source Search TEXT file")
-	call append(line('$'),PadField('l',20,'g:VimrexZTU')."mapping sequence to generate Usage TEXT file")
-	call append(line('$'),PadField('l',20,'g:VimrexZTR')."mapping sequence to generate Results TEXT file")
-	call append(line('$'),PadField('l',20,'g:VimrexZTA')."mapping sequence to generate All But Usage TEXT file")
-	call append(line('$'),PadField('l',20,'g:VimrexExit')."mapping sequence to exit ".s:myName)
-	call append(line('$'),PadField('l',20,"g:VimrexBrowseDir")."directory to browse for read files")
-	call append(line('$'),PadField('l',20,"g:VimrexFileDir")."directory to create files ('~')")
-	call append(line('$'),PadField('l',20,"g:VimrexFile")."regular expression file")
-	call append(line('$'),PadField('l',20,"g:VimrexRsltFile")."result file")
-	call append(line('$'),PadField('l',20,"g:VimrexSrcFile")."search source file")
-	call append(line('$'),PadField('l',20,"g:VimrexUsageFile")."usage file")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchPatLnk")."highlight link for non-current highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchPatCFG")."ctermfg= value for non-current highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchPatCBG")."ctermbg= value for non-current highlighting ('DarkMagenta')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchPatGFG")."guifg= value for non-current highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchPatGBG")."guibg= value for non-current highlighting ('DarkMagenta')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchAncLnk")."highlight link for lookaround highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchAncCFG")."ctermfg= value for lookaround highlighting ('DarkRed')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchAncCBG")."ctermbg= value for lookaround highlighting ('gray')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchAncGFG")."guifg= value for lookaround highlighting ('DarkRed')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchAncGBG")."guibg= value for lookaround highlighting ('gray')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchTokLnk")."highlight link for plain search highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchTokCBG")."ctermfg= value for plain search highlighting ('LightCyan')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchTokCFG")."ctermbg= value for plain search highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchTokGBG")."guifg= value for plain search highlighting ('LightCyan')")
-	call append(line('$'),PadField('l',20,"g:VimrexSrchTokGFG")."guibg= value for plain search highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexFilePatLnk")."highlight link for current regex highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexFilePatCFG")."ctermfg= value for current regex highlighting ('cyan')")
-	call append(line('$'),PadField('l',20,"g:VimrexFilePatCBG")."ctermfg= value for current regex highlighting ('brown')")
-	call append(line('$'),PadField('l',20,"g:VimrexFilePatGFG")."guifg= value for current regex highlighting ('cyan')")
-	call append(line('$'),PadField('l',20,"g:VimrexFilePatGBG")."guifg= value for current regex highlighting ('brown')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileCgpLnk")."highlight link for capture group highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexFileCgpCFG")."ctermfg= value for capture group highlighting ('blue')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileCgpCBG")."ctermfg= value for capture group highlighting ('red')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileCgpGFG")."guifg= value for capture group highlighting ('blue')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileCgpGBG")."guifg= value for capture group highlighting ('red')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileGrpLnk")."highlight link for capture group highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexFileGrpCFG")."ctermfg= value for non-capture group highlighting ('red')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileGrpCBG")."ctermfg= value for non-capture group highlighting ('blue')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileGrpGFG")."guifg= value for non-capture group highlighting ('red')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileGrpGBG")."guifg= value for non-capture group highlighting ('blue')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileChcLnk")."highlight link for choice list highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexFileChcCFG")."ctermfg= value for choice list highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileChcCBG")."ctermfg= value for choice list highlighting ('LightBlue')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileChcGFG")."guifg= value for choice list highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileChcGBG")."guifg= value for choice list highlighting ('LightBlue')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileExpLnk")."highlight link for expansion seq highlighting")
-	call append(line('$'),PadField('l',20,"g:VimrexFileExpCFG")."ctermfg= value for expansion seq highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileExpCBG")."ctermfg= value for expansion seq highlighting ('LightGreen')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileExpGFG")."guifg= value for expansion seq highlighting ('black')")
-	call append(line('$'),PadField('l',20,"g:VimrexFileExpGBG")."guifg= value for expansion seq highlighting ('LightGreen')")
-	call append(line('$')," ")
-	call append(line('$')," ")
-	call append(line('$'),PadField('c',76,s:myName.": Pattern and Match Highlighting"))
-	call s:doUsageSection('SIX')
-	call append(line('$'),PadField('c',76,s:myName.": Generating Files"))
-	call append(line('$')," ")
-	call append(line('$'),s:myName." will generate files of the current windows for you to view")
-	call s:doUsageSection('SEVEN')
-	call append(line('$'),PadField('c',76,s:myName.": Contact Information"))
-	call append(line('$')," ")
-	call append(line('$'),"If you find bugs, have suggestions, or just want to chat:")
-	call append(line('$'),"http://www.vim.org/account/profile.php?user_id=5397")
-	call append(line('$'),"You'll find my current email address there.")
+	let lines = []
+	call add(lines,PadField('c',76,s:myName.": Vim Regular Expression Developer Plugin"))
+	call add(lines,"")
+	let lines = lines + s:doUsageSection('ONE')
+	call add(lines,PadField('c',76,s:myName.": Command Summary"))
+	call add(lines,"")
+	call add(lines,Exec."Execute Regular Expression")
+	call add(lines,Anlz."Analyze Regular Expression")
+	call add(lines,Top."Changes to .Vim Regular Expression Specification Window")
+	call add(lines,Btm."Changes to .Vim Regular Expression Search Source Window")
+	call add(lines,Ctr."Changes to .Vim Regular Expression Result Window")
+	call add(lines,CLS."Clear .Vim Regular Expression Specification Window")
+	call add(lines,DRslt."Clear .Vim Regular Expression Result Window")
+	call add(lines,DSrc."Clear .Vim Regular Expression Search Source Window")
+	call add(lines,RdSrc."Read File into .Vim Regular Expression Search Source Window")
+	call add(lines,RdRex."Read File into .Vim Regular Expression Specification Window")
+	call add(lines,QQ."Open Usage Window (display this file)")
+	call add(lines,QL."Close Usage Window")
+	call add(lines,QC."Collapse Usage Window")
+	call add(lines,QP."Expand Usage Window")
+	call add(lines,ZHV."Generate HTML File of Regular Expression Window")
+	call add(lines,ZHS."Generate HTML File of Search Source Window")
+	call add(lines,ZHU."Generate HTML File of Usage Window")
+	call add(lines,ZHR."Generate HTML File of Results Window")
+	call add(lines,ZHA."Generate HTML File of All But Usage Window")
+	call add(lines,ZTV."Generate TEXT (.txt) File of Regular Expression Window")
+	call add(lines,ZTS."Generate TEXT (.txt) File of Search Source Window")
+	call add(lines,ZTU."Generate TEXT (.txt) File of Usage Window")
+	call add(lines,ZTR."Generate TEXT (.txt) File of Results Window")
+	call add(lines,ZTA."Generate TEXT (.txt) File of All But Usage Window")
+	call add(lines,Exit."Exit ".s:myName." (close all windows)")
+	let lines = lines + s:doUsageSection('TWO')
+	call add(lines,PadField('c',76,s:myName.": Synopsis of Use"))
+	let lines = lines + s:doUsageSection('THREE')
+	call add(lines,PadField('c',76,g:VimrexAnlz))
+	let lines = lines + s:doUsageSection('FOUR')
+	call add(lines,PadField('c',76,g:VimrexExec))
+	let lines= lines+ s:doUsageSection('FIVE')
+	call add(lines,PadField('c',76,s:myName.": Global Variables"))
+	call add(lines," ")
+	call add(lines,PadField('l',20,'g:VimrexExec')."mapping sequence for executing regular expression")
+	call add(lines,PadField('l',20,'g:VimrexAnlz')."mapping sequence for analyzing regular expression")
+	call add(lines,PadField('l',20,'g:VimrexTop')."mapping sequence for goto top window")
+	call add(lines,PadField('l',20,'g:VimrexBtm')."mapping sequence for goto bottom window")
+	call add(lines,PadField('l',20,'g:VimrexCtr')."mapping sequence for goto center window")
+	call add(lines,PadField('l',20,'g:VimrexCLS')."mapping sequence for clearing top window")
+	call add(lines,PadField('l',20,'g:VimrexDSrc')."mapping sequence for clearing bottom window")
+	call add(lines,PadField('l',20,'g:VimrexDRslt')."mapping sequence for clearing center window")
+	call add(lines,PadField('l',20,'g:VimrexRdSrc')."mapping sequence to read file into bottom window")
+	call add(lines,PadField('l',20,'g:VimrexRdRex')."mapping sequence to read file into top window")
+	call add(lines,PadField('l',20,'g:VimrexQQ')."mapping sequence to open display of this file")
+	call add(lines,PadField('l',20,'g:VimrexQL')."mapping sequence to close display of this file")
+	call add(lines,PadField('l',20,'g:VimrexQC')."mapping sequence to collapse display of this file")
+	call add(lines,PadField('l',20,'g:VimrexQP')."mapping sequence to expand display of this file")
+	call add(lines,PadField('l',20,'g:VimrexZHV')."mapping sequence to generate Regular Expression HTML file")
+	call add(lines,PadField('l',20,'g:VimrexZHS')."mapping sequence to generate Source Search HTML file")
+	call add(lines,PadField('l',20,'g:VimrexZHU')."mapping sequence to generate Usage HTML file")
+	call add(lines,PadField('l',20,'g:VimrexZHR')."mapping sequence to generate Results HTML file")
+	call add(lines,PadField('l',20,'g:VimrexZHA')."mapping sequence to generate All But Usage HTML file")
+	call add(lines,PadField('l',20,'g:VimrexZTV')."mapping sequence to generate Regular Expression TEXT file")
+	call add(lines,PadField('l',20,'g:VimrexZTS')."mapping sequence to generate Source Search TEXT file")
+	call add(lines,PadField('l',20,'g:VimrexZTU')."mapping sequence to generate Usage TEXT file")
+	call add(lines,PadField('l',20,'g:VimrexZTR')."mapping sequence to generate Results TEXT file")
+	call add(lines,PadField('l',20,'g:VimrexZTA')."mapping sequence to generate All But Usage TEXT file")
+	call add(lines,PadField('l',20,'g:VimrexExit')."mapping sequence to exit ".s:myName)
+	call add(lines,PadField('l',20,"g:VimrexBrowseDir")."directory to browse for read files")
+	call add(lines,PadField('l',20,"g:VimrexFileDir")."directory to create files ('~')")
+	call add(lines,PadField('l',20,"g:VimrexFile")."regular expression file")
+	call add(lines,PadField('l',20,"g:VimrexRsltFile")."result file")
+	call add(lines,PadField('l',20,"g:VimrexSrcFile")."search source file")
+	call add(lines,PadField('l',20,"g:VimrexUsageFile")."usage file")
+	call add(lines,PadField('l',20,"g:VimrexSrchPatLnk")."highlight link for non-current highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchPatCFG")."ctermfg= value for non-current highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchPatCBG")."ctermbg= value for non-current highlighting ('DarkMagenta')")
+	call add(lines,PadField('l',20,"g:VimrexSrchPatGFG")."guifg= value for non-current highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchPatGBG")."guibg= value for non-current highlighting ('DarkMagenta')")
+	call add(lines,PadField('l',20,"g:VimrexSrchAncLnk")."highlight link for lookaround highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchAncCFG")."ctermfg= value for lookaround highlighting ('DarkRed')")
+	call add(lines,PadField('l',20,"g:VimrexSrchAncCBG")."ctermbg= value for lookaround highlighting ('gray')")
+	call add(lines,PadField('l',20,"g:VimrexSrchAncGFG")."guifg= value for lookaround highlighting ('DarkRed')")
+	call add(lines,PadField('l',20,"g:VimrexSrchAncGBG")."guibg= value for lookaround highlighting ('gray')")
+	call add(lines,PadField('l',20,"g:VimrexSrchTokLnk")."highlight link for plain search highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchTokCBG")."ctermfg= value for plain search highlighting ('LightCyan')")
+	call add(lines,PadField('l',20,"g:VimrexSrchTokCFG")."ctermbg= value for plain search highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchTokGBG")."guifg= value for plain search highlighting ('LightCyan')")
+	call add(lines,PadField('l',20,"g:VimrexSrchTokGFG")."guibg= value for plain search highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexFilePatLnk")."highlight link for current regex highlighting")
+	call add(lines,PadField('l',20,"g:VimrexFilePatCFG")."ctermfg= value for current regex highlighting ('cyan')")
+	call add(lines,PadField('l',20,"g:VimrexFilePatCBG")."ctermfg= value for current regex highlighting ('brown')")
+	call add(lines,PadField('l',20,"g:VimrexFilePatGFG")."guifg= value for current regex highlighting ('cyan')")
+	call add(lines,PadField('l',20,"g:VimrexFilePatGBG")."guifg= value for current regex highlighting ('brown')")
+	call add(lines,PadField('l',20,"g:VimrexFileCgpLnk")."highlight link for capture group highlighting")
+	call add(lines,PadField('l',20,"g:VimrexFileCgpCFG")."ctermfg= value for capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexFileCgpCBG")."ctermfg= value for capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexFileCgpGFG")."guifg= value for capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexFileCgpGBG")."guifg= value for capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexFileGrpLnk")."highlight link for capture group highlighting")
+	call add(lines,PadField('l',20,"g:VimrexFileGrpCFG")."ctermfg= value for non-capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexFileGrpCBG")."ctermfg= value for non-capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexFileGrpGFG")."guifg= value for non-capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexFileGrpGBG")."guifg= value for non-capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexFileChcLnk")."highlight link for choice list highlighting")
+	call add(lines,PadField('l',20,"g:VimrexFileChcCFG")."ctermfg= value for choice list highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexFileChcCBG")."ctermfg= value for choice list highlighting ('LightBlue')")
+	call add(lines,PadField('l',20,"g:VimrexFileChcGFG")."guifg= value for choice list highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexFileChcGBG")."guifg= value for choice list highlighting ('LightBlue')")
+	call add(lines,PadField('l',20,"g:VimrexFileExpLnk")."highlight link for expansion seq highlighting")
+	call add(lines,PadField('l',20,"g:VimrexFileExpCFG")."ctermfg= value for expansion seq highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexFileExpCBG")."ctermfg= value for expansion seq highlighting ('LightGreen')")
+	call add(lines,PadField('l',20,"g:VimrexFileExpGFG")."guifg= value for expansion seq highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexFileExpGBG")."guifg= value for expansion seq highlighting ('LightGreen')")
+	call add(lines," ")
+	call add(lines," ")
+	call add(lines,PadField('c',76,s:myName.": Pattern and Match Highlighting"))
+	let lines = lines + s:doUsageSection('SIX')
+	call add(lines,PadField('c',76,s:myName.": Generating Files"))
+	call add(lines," ")
+	call add(lines,s:myName." will generate files of the current windows for you to view")
+	let lines = lines + s:doUsageSection('SEVEN')
+	call add(lines,PadField('c',76,s:myName.": Contact Information"))
+	call add(lines," ")
+	call add(lines,"If you find bugs, have suggestions, or just want to chat:")
+	call add(lines,"http://www.vim.org/account/profile.php?user_id=5397")
+	call add(lines,"You'll find my current email address there.")
+	%d _
+	call append(0, lines)
+	let g:lines = lines
+	$d _
+	1
+	call s:doUsageSyntax()
 	syntax sync fromstart
 	setlocal nomodified readonly nomodifiable
 	echohl Question
@@ -1962,22 +1974,12 @@ endfunction
 
 function s:doUsageSection(sect)
 	silent :w
-	execute 'silent view! +set\ noswapfile '.s:thisScript
-	let strtStr='^BEGIN MANUAL SECTION '.a:sect
-	let endStr='^END MANUAL SECTION '.a:sect
-	let lnum=search(strtStr,'W')+1
-	let elnum=search(endStr,'W')
-	while lnum < elnum
-		let usageLine=getline(lnum)
-		silent b#
-		call append(line('$'),usageLine)
-		silent :w
-		silent b#
-		let lnum=lnum+1
-	endwhile
-	silent b#
-	execute 'silent '.bufnr(s:thisScript).'bd'
-	call s:doUsageSyntax()
+	let strtStr='BEGIN MANUAL SECTION '.a:sect
+	let endStr='END MANUAL SECTION '.a:sect
+	let lnum=index(s:thisScriptContent,strtStr)+1
+	let elnum=index(s:thisScriptContent,endStr)-1
+	let usageLines = s:thisScriptContent[lnum : elnum]
+	return usageLines
 endfunction
 
 function s:IT_LL_NEVER_HAPPEN()
@@ -2063,8 +2065,8 @@ highlighted as appropriate to its regular expression atom(s).
 
 NOTE:  you need to use the menu 'Execute Regular Expression' button or the key
        mapping to search and have the described results.  Using Vim's search
-			 commands will move to different matches, but will not effect the
-			 highlighting.  See : Pattern and Match Highlighting below.
+       commands will move to different matches, but will not effect the
+       highlighting.  See : Pattern and Match Highlighting below.
 
 
 END MANUAL SECTION FIVE
@@ -2078,13 +2080,13 @@ cterm/gui values.
 There are eight highlight groups used.  They are:
 
      current regex
-		 plain search
-		 capture
-		 non-capture
-		 choice
-		 expansion
-		 lookaround
-		 non-current
+     plain search
+     capture
+     non-capture
+     choice
+     expansion
+     lookaround
+     non-current
 
 current regex is used to highlight the current regular expression in the top
 window.
