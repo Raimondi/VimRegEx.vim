@@ -1740,26 +1740,26 @@ function s:doUsageSyntax()
 	syntax match VimrexUsageHotkey 'g:VimrexFilePatCBG'
 	syntax match VimrexUsageHotkey 'g:VimrexFilePatGFG'
 	syntax match VimrexUsageHotkey 'g:VimrexFilePatGBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileCgpLnk'
-	syntax match VimrexUsageHotkey 'g:VimrexFileCgpCFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileCgpCBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileCgpGFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileCgpGBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileGrpLnk'
-	syntax match VimrexUsageHotkey 'g:VimrexFileGrpCFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileGrpCBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileGrpGFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileGrpGBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileChcLnk'
-	syntax match VimrexUsageHotkey 'g:VimrexFileChcCFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileChcCBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileChcGFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileChcGBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileExpLnk'
-	syntax match VimrexUsageHotkey 'g:VimrexFileExpCFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileExpCBG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileExpGFG'
-	syntax match VimrexUsageHotkey 'g:VimrexFileExpGBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchCgpLnk'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchCgpCFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchCgpCBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchCgpGFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchCgpGBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchGrpLnk'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchGrpCFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchGrpCBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchGrpGFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchGrpGBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchChcLnk'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchChcCFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchChcCBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchChcGFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchChcGBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchExpLnk'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchExpCFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchExpCBG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchExpGFG'
+	syntax match VimrexUsageHotkey 'g:VimrexSrchExpGBG'
 	syntax match VimrexUsageHotkey ':h tohtml'
 	syntax match VimrexUsageHotkey '/Remarks:'
 	execute 'syntax match VimrexUsageHotkey "'.g:VimrexExec.'"'
@@ -1926,26 +1926,26 @@ function! s:usage()
 	call add(lines,PadField('l',20,"g:VimrexFilePatCBG")."ctermfg= value for current regex highlighting ('brown')")
 	call add(lines,PadField('l',20,"g:VimrexFilePatGFG")."guifg= value for current regex highlighting ('cyan')")
 	call add(lines,PadField('l',20,"g:VimrexFilePatGBG")."guifg= value for current regex highlighting ('brown')")
-	call add(lines,PadField('l',20,"g:VimrexFileCgpLnk")."highlight link for capture group highlighting")
-	call add(lines,PadField('l',20,"g:VimrexFileCgpCFG")."ctermfg= value for capture group highlighting ('blue')")
-	call add(lines,PadField('l',20,"g:VimrexFileCgpCBG")."ctermfg= value for capture group highlighting ('red')")
-	call add(lines,PadField('l',20,"g:VimrexFileCgpGFG")."guifg= value for capture group highlighting ('blue')")
-	call add(lines,PadField('l',20,"g:VimrexFileCgpGBG")."guifg= value for capture group highlighting ('red')")
-	call add(lines,PadField('l',20,"g:VimrexFileGrpLnk")."highlight link for capture group highlighting")
-	call add(lines,PadField('l',20,"g:VimrexFileGrpCFG")."ctermfg= value for non-capture group highlighting ('red')")
-	call add(lines,PadField('l',20,"g:VimrexFileGrpCBG")."ctermfg= value for non-capture group highlighting ('blue')")
-	call add(lines,PadField('l',20,"g:VimrexFileGrpGFG")."guifg= value for non-capture group highlighting ('red')")
-	call add(lines,PadField('l',20,"g:VimrexFileGrpGBG")."guifg= value for non-capture group highlighting ('blue')")
-	call add(lines,PadField('l',20,"g:VimrexFileChcLnk")."highlight link for choice list highlighting")
-	call add(lines,PadField('l',20,"g:VimrexFileChcCFG")."ctermfg= value for choice list highlighting ('black')")
-	call add(lines,PadField('l',20,"g:VimrexFileChcCBG")."ctermfg= value for choice list highlighting ('LightBlue')")
-	call add(lines,PadField('l',20,"g:VimrexFileChcGFG")."guifg= value for choice list highlighting ('black')")
-	call add(lines,PadField('l',20,"g:VimrexFileChcGBG")."guifg= value for choice list highlighting ('LightBlue')")
-	call add(lines,PadField('l',20,"g:VimrexFileExpLnk")."highlight link for expansion seq highlighting")
-	call add(lines,PadField('l',20,"g:VimrexFileExpCFG")."ctermfg= value for expansion seq highlighting ('black')")
-	call add(lines,PadField('l',20,"g:VimrexFileExpCBG")."ctermfg= value for expansion seq highlighting ('LightGreen')")
-	call add(lines,PadField('l',20,"g:VimrexFileExpGFG")."guifg= value for expansion seq highlighting ('black')")
-	call add(lines,PadField('l',20,"g:VimrexFileExpGBG")."guifg= value for expansion seq highlighting ('LightGreen')")
+	call add(lines,PadField('l',20,"g:VimrexSrchCgpLnk")."highlight link for capture group highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchCgpCFG")."ctermfg= value for capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexSrchCgpCBG")."ctermfg= value for capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexSrchCgpGFG")."guifg= value for capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexSrchCgpGBG")."guifg= value for capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexSrchGrpLnk")."highlight link for non-capture group highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchGrpCFG")."ctermfg= value for non-capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexSrchGrpCBG")."ctermfg= value for non-capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexSrchGrpGFG")."guifg= value for non-capture group highlighting ('red')")
+	call add(lines,PadField('l',20,"g:VimrexSrchGrpGBG")."guifg= value for non-capture group highlighting ('blue')")
+	call add(lines,PadField('l',20,"g:VimrexSrchChcLnk")."highlight link for choice list highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchChcCFG")."ctermfg= value for choice list highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchChcCBG")."ctermfg= value for choice list highlighting ('LightBlue')")
+	call add(lines,PadField('l',20,"g:VimrexSrchChcGFG")."guifg= value for choice list highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchChcGBG")."guifg= value for choice list highlighting ('LightBlue')")
+	call add(lines,PadField('l',20,"g:VimrexSrchExpLnk")."highlight link for expansion seq highlighting")
+	call add(lines,PadField('l',20,"g:VimrexSrchExpCFG")."ctermfg= value for expansion seq highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchExpCBG")."ctermfg= value for expansion seq highlighting ('LightGreen')")
+	call add(lines,PadField('l',20,"g:VimrexSrchExpGFG")."guifg= value for expansion seq highlighting ('black')")
+	call add(lines,PadField('l',20,"g:VimrexSrchExpGBG")."guifg= value for expansion seq highlighting ('LightGreen')")
 	call add(lines," ")
 	call add(lines," ")
 	call add(lines,PadField('c',76,s:myName.": Pattern and Match Highlighting"))
