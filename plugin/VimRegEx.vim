@@ -50,6 +50,11 @@
 "      window
 "
 
+if exists('g:loaded_vimregex')
+	finish
+endif
+let g:loaded_vimregex = 1
+
 let s:thisScript=expand("<sfile>:p")
 let s:myName=fnamemodify(s:thisScript,":t")
 
