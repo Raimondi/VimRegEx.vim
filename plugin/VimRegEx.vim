@@ -58,6 +58,20 @@ let g:loaded_vimregex = 1
 
 let s:thisScript=expand("<sfile>:p")
 let s:myName=fnamemodify(s:thisScript,":t")
+let s:inlegend=0
+
+let s:grp=''
+let s:capgrp=''
+let s:choice=''
+let s:expansion=''
+let s:class=''
+let s:grpOpen='\\(\|\\%(\|\\%[\|[:\@!'
+let s:grpClose='\\)\|]'
+
+let s:hit=0
+let s:lline=1
+let s:lpat=''
+let s:rline=0
 
 if !exists('g:VSUTIL') || g:VSUTILMAJ < 1 || g:VSUTILMIN < 4
 	silent! runtime plugin/vsutil.vim
@@ -75,6 +89,9 @@ if exists('g:VimrexDebug')
 else
 	command! -nargs=1 VimrexDBG :
 endif
+
+command! -nargs=0 Vimrex call s:Vimrex()
+command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
 "function! s:doGlobals() "{{{1
 function! s:doGlobals()
@@ -462,8 +479,6 @@ function! s:closeUsage()
 	endif
 endfunction
 
-let s:inlegend=0
-
 "function! s:legend() "{{{1
 function! s:legend()
 	if s:inlegend
@@ -647,9 +662,6 @@ augroup END
 	endif
 	call s:undoGlobals()
 endfunction
-
-command! -nargs=0 Vimrex call s:Vimrex()
-command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
 " Vimrex initialization function {{{1
 function! s:Vimrex()
@@ -870,14 +882,6 @@ function! s:getAnchors(pat)
 	endwhile
 endfunction
 
-let s:grp=''
-let s:capgrp=''
-let s:choice=''
-let s:expansion=''
-let s:class=''
-let s:grpOpen='\\(\|\\%(\|\\%[\|[:\@!'
-let s:grpClose='\\)\|]'
-
 "function! s:parsePat(pat) "{{{1
 function! s:parsePat(pat)
 	let s:grp=''
@@ -965,11 +969,6 @@ function! s:parsePat(pat)
 		endif
 	endwhile
 endfunction
-
-let s:hit=0
-let s:lline=1
-let s:lpat=''
-let s:rline=0
 
 "function! s:execRegex() "{{{1
 function! s:execRegex()
