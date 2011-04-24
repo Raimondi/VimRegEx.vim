@@ -2179,3 +2179,5 @@ See:   :h tohtml, then /Remarks: (search for 'Remarks:').
 
 END MANUAL SECTION SEVEN
 endfunction
+
+" vim:set tw=78 et ts=2 sw=2 sts=2: {{{1
