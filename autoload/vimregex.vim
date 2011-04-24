@@ -40,30 +40,9 @@ endif
 
 "function! vimregex#doGlobals() "{{{1
 function! vimregex#doGlobals()
-  "if !exists("g:VimrexBrowseDir")
-  " let RTdirs=expand(&runtimepath)
-  " if !exists("*StrListTok")
-  "   runtime plugin/vsutil.vim
-  " endif
-  " let RTdir=StrListTok(RTdirs,'b:rtdirs')
-  " while RTdir != ''
-  "   if glob(RTdir) != ''
-  "     let g:VimrexBrowseDir=RTdir
-  "     break
-  "   endif
-  "   let RTdir=StrListTok('','b:rtdirs')
-  " endwhile
-  " while RTdir != ''
-  "   let RTdir=StrListTok('','b:rtdirs')
-  " endwhile
-  " unlet b:rtdirs
-  " unlet! RTdir RTdirs
-  "endif
-  for RTdir in split(expand(&runtimepath), ',')
-    if glob(RTdir) != ''
-      let g:VimrexBrowseDir=RTdir
-    endif
-  endfor
+  if !exists('g:VimRegexBrowseDir')
+    let g:VimRegexBrowseDir = filter(split(expand(&rtp),','), 'v:val != ""')[0]
+  endif
 
   " File paths {{{2
   if !exists("g:VimrexFileDir")
