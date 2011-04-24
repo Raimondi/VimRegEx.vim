@@ -1,4 +1,4 @@
-" Vim plugin for Vim Regular Expression Development
+" Vim plugin for Vim Regular Expression Development {{{1
 " Language:    vim script
 " Maintainer:  Dave Silvia <dsilvia@mchsi.com>
 " Date:        9/27/2004
@@ -49,7 +49,8 @@
 "      selected pattern in top
 "      window
 "
-
+"
+" Load guard {{{1
 if exists('g:loaded_vimregex')
 	finish
 endif
@@ -75,6 +76,7 @@ else
 	command! -nargs=1 VimrexDBG :
 endif
 
+"function! s:doGlobals() "{{{1
 function! s:doGlobals()
 if !exists("g:VimrexBrowseDir")
 	let RTdirs=expand(&runtimepath)
@@ -307,6 +309,7 @@ if !exists("g:VimrexFilePatLnk")
 endif
 endfunction " s:doGlobals()
 
+"function! s:undoGlobals() "{{{1
 function! s:undoGlobals()
 	unlet! g:VimrexBrowseDir g:VimrexFileDir g:VimrexFile g:VimrexRsltFile g:VimrexSrcFile g:VimrexUsageFile
 	unlet! g:VimrexExec g:VimrexAnlz g:VimrexTop g:VimrexBtm g:VimrexCtr g:VimrexDSrc g:VimrexDRslt g:VimrexCLS
@@ -323,10 +326,12 @@ function! s:undoGlobals()
 	unlet! g:VimrexFilePatGBG
 endfunction " s:undoGlobals()
 
+"function! s:gotoWin(which) "{{{1
 function! s:gotoWin(which)
 	execute bufwinnr(a:which).'wincmd w'
 endfunction
 
+"function! s:browser(which) "{{{1
 function! s:browser(which)
 	if has("gui_running") && has("browse")
 		let fullname=browse(0,'Read File Into '.a:which,g:VimrexBrowseDir,'')
@@ -359,6 +364,7 @@ function! s:browser(which)
 	call s:restoreCurrent()
 endfunction
 
+"function! s:generate(which,type) "{{{1
 function! s:generate(which,type)
 	if a:which == 'ALLBUTUSAGE'
 		call s:saveCurrent()
@@ -402,6 +408,7 @@ function! s:generate(which,type)
 	call s:restoreCurrent()
 endfunction
 
+"function! s:adjustWin(which,how) "{{{1
 function! s:adjustWin(which,how)
 	let whichBufNr=bufwinnr(a:which)
 	if whichBufNr == -1
@@ -446,6 +453,7 @@ function! s:adjustWin(which,how)
 	resize 1
 endfunction
 
+"function! s:closeUsage() "{{{1
 function! s:closeUsage()
 	let usageBuf=bufwinnr(g:VimrexUsageFile)
 	if usageBuf != -1
@@ -456,6 +464,7 @@ endfunction
 
 let s:inlegend=0
 
+"function! s:legend() "{{{1
 function! s:legend()
 	if s:inlegend
 		return
@@ -497,6 +506,7 @@ function! s:legend()
 	let s:inlegend=0
 endfunction
 
+"function! s:doGvimMenu() "{{{1
 function! s:doGvimMenu()
 	execute 'amenu <silent> &Vimrex.&Execute\ Regular\ Expression<TAB>'.g:VimrexExec.' :call <SID>execRegex()<CR>'
 	execute 'amenu <silent> &Vimrex.&Analyze\ Regular\ Expression<TAB>'.g:VimrexAnlz.' :call TranslateRegex()<CR>'
@@ -527,6 +537,7 @@ function! s:doGvimMenu()
 	execute 'amenu <silent> &Vimrex.E&xit<TAB>'.g:VimrexExit.' :call <SID>isVimrexRunning(g:VimRexUserCalled)<CR>'
 endfunction
 
+"function! s:doMap(name,val) "{{{1
 function! s:doMap(name,val)
 	let sname='s:prev'.a:name
 	let siname='s:iprev'.a:name
@@ -537,6 +548,7 @@ function! s:doMap(name,val)
 	execute 'imap <silent> '.{gname}.' <Esc>'.a:val.'<CR>'
 endfunction
 
+"function! s:doUnMap(name) "{{{1
 function! s:doUnMap(name)
 	let sname='s:prev'.a:name
 	let siname='s:iprev'.a:name
@@ -553,6 +565,7 @@ function! s:doUnMap(name)
 	endif
 endfunction
 
+"function! s:isVimrexRunning(file) "{{{1
 function! s:isVimrexRunning(file)
 	if !exists("g:VimrexRunning")
 		return
@@ -638,7 +651,7 @@ endfunction
 command! -nargs=0 Vimrex call s:Vimrex()
 command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
-" Vimrex initialization function
+" Vimrex initialization function {{{1
 function! s:Vimrex()
 	call s:doGlobals()
 augroup Vimrex
@@ -750,6 +763,7 @@ augroup END
 	call s:doMap('Exit',':call <SID>isVimrexRunning(g:VimRexUserCalled)')
 endfunction
 
+"function! s:doSampleRegex() "{{{1
 function! s:doSampleRegex()
 	call append(0,s:sampleRegex1)
 	let nr=2
@@ -761,6 +775,7 @@ function! s:doSampleRegex()
 	endwhile
 endfunction
 
+"function! s:doSampleSrc() "{{{1
 function! s:doSampleSrc()
 	call append(0,s:sampleSrc1)
 	let nr=2
@@ -772,6 +787,7 @@ function! s:doSampleSrc()
 	endwhile
 endfunction
 
+"function! s:patHilite(pat,grp,...) "{{{1
 function! s:patHilite(pat,grp,...)
 	let thePat=''
 	if a:0
@@ -792,6 +808,7 @@ function! s:patHilite(pat,grp,...)
 	syntax sync fromstart
 endfunction
 
+"function! s:getAnchors(pat) "{{{1
 function! s:getAnchors(pat)
 	let pat=a:pat
 	let s:BanchorPat=''
@@ -861,6 +878,7 @@ let s:class=''
 let s:grpOpen='\\(\|\\%(\|\\%[\|[:\@!'
 let s:grpClose='\\)\|]'
 
+"function! s:parsePat(pat) "{{{1
 function! s:parsePat(pat)
 	let s:grp=''
 	let s:capgrp=''
@@ -953,6 +971,7 @@ let s:lline=1
 let s:lpat=''
 let s:rline=0
 
+"function! s:execRegex() "{{{1
 function! s:execRegex()
 	" Where are we now?
 	let caller=winnr()
@@ -1087,6 +1106,7 @@ function! s:execRegex()
 	execute caller.'wincmd w'
 endfunction
 
+"function! s:hiliteGrp(which,synGrp,lnum,matchPos) "{{{1
 function! s:hiliteGrp(which,synGrp,lnum,matchPos)
 	let sline=getline(a:lnum)
 	let grp=StrListTok(a:which,'g:VimrexHLgrp',"\<NL>")
@@ -1110,6 +1130,7 @@ function! s:hiliteGrp(which,synGrp,lnum,matchPos)
 	unlet! g:VimrexHLgrp
 endfunction
 
+"function! s:saveCurrent() "{{{1
 function! s:saveCurrent()
 	let s:cWin=winnr()
 	let s:cBuf=bufnr('')
@@ -1117,6 +1138,7 @@ function! s:saveCurrent()
 	let s:ccnum=col('.')
 endfunction
 
+"function! s:restoreCurrent() "{{{1
 function! s:restoreCurrent()
 	if winnr() != s:cWin
 		execute s:cWin.'wincmd w'
@@ -1125,6 +1147,7 @@ function! s:restoreCurrent()
 	call cursor(s:clnum,s:ccnum)
 endfunction
 
+"function! s:cls(which) "{{{1
 function! s:cls(which)
 	if a:which == g:VimrexFile || a:which == g:VimrexSrcFile
 		let ans=confirm("Clear ".a:which,"&Ok\n&Cancel",1)
@@ -1145,6 +1168,7 @@ function! s:cls(which)
 	endif
 endfunction
 
+"function! s:delFile(fname) "{{{1
 function! s:delFile(fname)
 	let fname=glob(a:fname)
 	if fname == ''
@@ -1163,6 +1187,7 @@ function! s:delFile(fname)
 	call getchar()
 endfunction
 
+"function! TranslateRegex(...) "{{{1
 function! TranslateRegex(...)
 	let doLocal=!a:0
 	if doLocal
@@ -1247,6 +1272,7 @@ function! TranslateRegex(...)
 	endif
 endfunction
 
+"function! s:repeatAtomDesc(qualifier) "{{{1
 function! s:repeatAtomDesc(qualifier)
 	let qualifier=a:qualifier
 	if qualifier == '' || match(qualifier,'\d*,\d*') != -1 || match(qualifier,'\%(+\|-\)') != -1
@@ -1278,6 +1304,7 @@ function! s:repeatAtomDesc(qualifier)
 	return theDesc
 endfunction
 
+"function! s:charClassDesc(class) "{{{1
 function! s:charClassDesc(class)
 	let theClass=StrListTok(s:charClass,'b:charClass',"\<NL>")
 	let found=0
@@ -1298,6 +1325,7 @@ function! s:charClassDesc(class)
 	return theDesc
 endfunction
 
+"function! s:getTokDesc(pat,thePat,retPat) "{{{1
 function! s:getTokDesc(pat,thePat,retPat)
 	let idx=0
 	let lidx=strlen(a:pat)
@@ -1432,6 +1460,7 @@ function! s:getTokDesc(pat,thePat,retPat)
 	return theDesc
 endfunction
 
+"if exists('loaded_regex_token_descriptions') "{{{1
 if exists('loaded_regex_token_descriptions')
 	finish
 endif
@@ -1663,7 +1692,8 @@ let s:sampleSrc15='Read The Finished Manuscript'
 let s:sampleSrc16='Reap The Future Manufacturing Benefits'
 let s:sampleSrc17='Reach The Final Manufacture Phase'
 
-function s:doUsageSyntax()
+"function! s:doUsageSyntax() "{{{1
+function! s:doUsageSyntax()
 	syntax match VimrexUsageDesc '\p*' contains=VimrexUsageTitle,VimrexUsageSketch,VimrexUsageEmph,VimrexUsageHotkey,VimrexSearchPattern,VimrexFilePattern,VimrexSearchToken,VimrexSearchCgp,VimrexSearchGrp,VimrexSearchChc,VimrexSearchAnchor,VimrexSearchExp
 	syntax match VimrexFilePattern "current regex"
 	syntax match VimrexSearchToken "plain search"
@@ -1800,6 +1830,7 @@ function s:doUsageSyntax()
 	highlight link VimrexUsageHotkey Statement
 endfunction
 
+"function! s:usage() "{{{1
 function! s:usage()
 	if bufwinnr(g:VimrexUsageFile) != -1
 		return
@@ -1977,7 +2008,8 @@ function! s:usage()
 	echohl None
 endfunction
 
-function s:doUsageSection(sect)
+"function! s:doUsageSection(sect) "{{{1
+function! s:doUsageSection(sect)
 	silent :w
 	let strtStr='BEGIN MANUAL SECTION '.a:sect
 	let endStr='END MANUAL SECTION '.a:sect
@@ -1987,7 +2019,8 @@ function s:doUsageSection(sect)
 	return usageLines
 endfunction
 
-function s:IT_LL_NEVER_HAPPEN()
+"function! s:IT_LL_NEVER_HAPPEN() "{{{1
+function! s:IT_LL_NEVER_HAPPEN()
 BEGIN MANUAL SECTION ONE
 Uses 3 windows for developing Vim regular expressions.
 
