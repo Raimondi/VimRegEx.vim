@@ -1,10 +1,10 @@
 " Load guard {{{1
-if exists('g:loaded_vimregex_autoload')
+if exists('g:loaded_vimregex_autoload') && !exists('g:testing_vimregex')
   finish
 endif
 let g:loaded_vimregex_autoload = 1
 
-let s:thisScript=expand("<sfile>:p")
+let s:thisScript=expand("<sfile>:p:h:h").'/plugin/'.expand('<sfile>:t')
 let s:myName=fnamemodify(s:thisScript,":t")
 let s:inlegend=0
 
@@ -37,9 +37,6 @@ if exists('g:VimrexDebug')
 else
   command! -nargs=1 VimrexDBG :
 endif
-
-command! -nargs=0 Vimrex call vimregex#Vimrex()
-command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
 "function! vimregex#doGlobals() "{{{1
 function! vimregex#doGlobals()
