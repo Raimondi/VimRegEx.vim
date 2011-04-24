@@ -93,23 +93,6 @@ endif
 command! -nargs=0 Vimrex call s:Vimrex()
 command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
-"function! s:undoGlobals() "{{{1
-function! s:undoGlobals()
-  unlet! g:VimrexBrowseDir g:VimrexFileDir g:VimrexFile g:VimrexRsltFile g:VimrexSrcFile g:VimrexUsageFile
-  unlet! g:VimrexExec g:VimrexAnlz g:VimrexTop g:VimrexBtm g:VimrexCtr g:VimrexDSrc g:VimrexDRslt g:VimrexCLS
-  unlet! g:VimrexRdSrc g:VimrexRdRex g:VimrexExit g:VimrexQQ g:VimrexQC g:VimrexQP g:VimrexQL g:VimrexZHV
-  unlet! g:VimrexZHS g:VimrexZHU g:VimrexZHR g:VimrexZHA g:VimrexZTV g:VimrexZTS g:VimrexZTU g:VimrexZTR
-  unlet! g:VimrexZTA g:VimrexSrchPatLnk g:VimrexSrchPatCFG g:VimrexSrchPatCBG g:VimrexSrchPatGFG
-  unlet! g:VimrexSrchPatGBG g:VimrexSrchAncLnk g:VimrexSrchAncCFG g:VimrexSrchAncCBG g:VimrexSrchAncGFG
-  unlet! g:VimrexSrchAncGBG g:VimrexSrchTokLnk g:VimrexSrchTokCBG g:VimrexSrchTokCFG g:VimrexSrchTokGBG
-  unlet! g:VimrexSrchTokGFG g:VimrexSrchCgpLnk g:VimrexSrchCgpCFG g:VimrexSrchCgpCBG g:VimrexSrchCgpGFG
-  unlet! g:VimrexSrchCgpGBG g:VimrexSrchGrpLnk g:VimrexSrchGrpCFG g:VimrexSrchGrpCBG g:VimrexSrchGrpGFG
-  unlet! g:VimrexSrchGrpGBG g:VimrexSrchChcLnk g:VimrexSrchChcCFG g:VimrexSrchChcCBG g:VimrexSrchChcGFG
-  unlet! g:VimrexSrchChcGBG g:VimrexSrchExpLnk g:VimrexSrchExpCFG g:VimrexSrchExpCBG g:VimrexSrchExpGFG
-  unlet! g:VimrexSrchExpGBG g:VimrexFilePatLnk g:VimrexFilePatCFG g:VimrexFilePatCBG g:VimrexFilePatGFG
-  unlet! g:VimrexFilePatGBG
-endfunction " s:undoGlobals()
-
 "function! s:gotoWin(which) "{{{1
 function! s:gotoWin(which)
   execute bufwinnr(a:which).'wincmd w'
@@ -424,10 +407,10 @@ augroup END
   syntax clear VimrexSearchPattern
   syntax clear VimrexSearchToken
   if exists("g:VimRegEx")
-    call s:undoGlobals()
+    call vimregex#undoGlobals()
     :qa!
   endif
-  call s:undoGlobals()
+  call vimregex#undoGlobals()
 endfunction
 
 " Vimrex initialization function {{{1
