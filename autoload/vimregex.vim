@@ -239,7 +239,7 @@ function! vimregex#doGlobals()
       let g:VimrexFilePatGBG='brown'
     endif
   endif
-endfunction " vimregex#doGlobals() }}}1
+endfunction " vimregex#doGlobals()
 
 "function! vimregex#undoGlobals() "{{{1
 function! vimregex#undoGlobals()
@@ -258,4 +258,9 @@ function! vimregex#undoGlobals()
   unlet! g:VimrexFilePatGBG
 endfunction " vimregex#undoGlobals()
 
+
+"function! vimregex#gotoWin(which) "{{{1
+function! vimregex#gotoWin(which)
+  execute bufwinnr(a:which).'wincmd w'
+endfunction
 

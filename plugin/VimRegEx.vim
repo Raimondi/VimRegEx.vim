@@ -93,11 +93,6 @@ endif
 command! -nargs=0 Vimrex call s:Vimrex()
 command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
-"function! s:gotoWin(which) "{{{1
-function! s:gotoWin(which)
-  execute bufwinnr(a:which).'wincmd w'
-endfunction
-
 "function! s:browser(which) "{{{1
 function! s:browser(which)
   if has("gui_running") && has("browse")
@@ -275,9 +270,9 @@ endfunction
 function! s:doGvimMenu()
   execute 'amenu <silent> &Vimrex.&Execute\ Regular\ Expression<TAB>'.g:VimrexExec.' :call <SID>execRegex()<CR>'
   execute 'amenu <silent> &Vimrex.&Analyze\ Regular\ Expression<TAB>'.g:VimrexAnlz.' :call TranslateRegex()<CR>'
-  execute 'amenu <silent> &Vimrex.&Window.Goto.(&Top)\ Regular\ Expression\ Specification\ Window<TAB>'.g:VimrexTop.' :call <SID>gotoWin(g:VimrexFile)<CR>'
-  execute 'amenu <silent> &Vimrex.&Window.Goto.(&Bottom)\ Regular\ Expression\ Search\ Source\ Window<TAB>'.g:VimrexBtm.' :call <SID>gotoWin(g:VimrexSrcFile)<CR>'
-  execute 'amenu <silent> &Vimrex.&Window.Goto.(&Center)\ Regular\ Expression\ Result\ Window<TAB>'.g:VimrexCtr.' :call <SID>gotoWin(g:VimrexRsltFile)<CR>'
+  execute 'amenu <silent> &Vimrex.&Window.Goto.(&Top)\ Regular\ Expression\ Specification\ Window<TAB>'.g:VimrexTop.' :call vimregex#gotoWin(g:VimrexFile)<CR>'
+  execute 'amenu <silent> &Vimrex.&Window.Goto.(&Bottom)\ Regular\ Expression\ Search\ Source\ Window<TAB>'.g:VimrexBtm.' :call vimregex#gotoWin(g:VimrexSrcFile)<CR>'
+  execute 'amenu <silent> &Vimrex.&Window.Goto.(&Center)\ Regular\ Expression\ Result\ Window<TAB>'.g:VimrexCtr.' :call vimregex#gotoWin(g:VimrexRsltFile)<CR>'
   execute 'amenu <silent> &Vimrex.&Window.&Clear.\.&Vim\ Regular\ Expression\ Specification\ Window<TAB>'.g:VimrexCLS.' :call <SID>cls(g:VimrexFile)<CR>'
   execute 'amenu <silent> &Vimrex.&Window.&Clear.\.Vim\ Regular\ Expression\ &Result\ Window<TAB>'.g:VimrexDRslt.' :call <SID>cls(g:VimrexRsltFile)<CR>'
   execute 'amenu <silent> &Vimrex.&Window.&Clear.\.Vim\ Regular\ Expression\ Search\ &Source\ Window<TAB>'.g:VimrexDSrc.' :call <SID>cls(g:VimrexSrcFile)<CR>'
@@ -500,9 +495,9 @@ augroup END
   endif
   call s:doMap('Exec',':call <SID>execRegex()')
   call s:doMap('Anlz',':call TranslateRegex()')
-  call s:doMap('Top',':call <SID>gotoWin(g:VimrexFile)')
-  call s:doMap('Btm',':call <SID>gotoWin(g:VimrexSrcFile)')
-  call s:doMap('Ctr',':call <SID>gotoWin(g:VimrexRsltFile)')
+  call s:doMap('Top',':call vimregex#gotoWin(g:VimrexFile)')
+  call s:doMap('Btm',':call vimregex#gotoWin(g:VimrexSrcFile)')
+  call s:doMap('Ctr',':call vimregex#gotoWin(g:VimrexRsltFile)')
   call s:doMap('CLS',':call <SID>cls(g:VimrexFile)')
   call s:doMap('DSrc',':call <SID>cls(g:VimrexSrcFile)')
   call s:doMap('DRslt',':call <SID>cls(g:VimrexRsltFile)')
