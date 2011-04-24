@@ -880,18 +880,13 @@ function! vimregex#parsePat(pat)
       else
         let targetGrp='s:choice'
       endif
-      let thisGrp=StrListTok({targetGrp},'g:grpList',"\<NL>")
-      let found=0
-      while thisGrp != ''
+      let found = 0
+      for thisGrp in split({targetGrp}, "\<NL>")
         if thisGrp ==# theGrp
-          let found=1
-          while thisGrp != ''
-            let thisGrp=StrListTok('','g:grpList')
-          endwhile
+          let found = 1
+          break
         endif
-        let thisGrp=StrListTok('','g:grpList')
-      endwhile
-      unlet! g:grpList
+      endfor
       if !found
         let {targetGrp}={targetGrp}.theGrp."\<NL>"
       endif
