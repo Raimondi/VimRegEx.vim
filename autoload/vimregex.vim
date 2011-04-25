@@ -1031,25 +1031,22 @@ endfunction
 "function! vimregex#hiliteGrp(which,synGrp,lnum,matchPos) "{{{1
 function! vimregex#hiliteGrp(which,synGrp,lnum,matchPos)
   let sline=getline(a:lnum)
-  let grp=StrListTok(a:which,'g:VimrexHLgrp',"\<NL>")
-  while grp != ''
-    let strt=0
-    let grpTokStrt=match(sline,grp,strt)
+  for grp in split(a:which, "\<NL>")
+    let strt = 0
+    let grpTokStrt = match(sline, grp, strt)
     while grpTokStrt != -1
-      let grpTok=matchstr(sline,grp,strt)
+      let grpTok = matchstr(sline, grp, strt)
       if grpTok != ''
-        let grpTokEnd=strlen(grpTok)+grpTokStrt
-        let grpCnum=1+grpTokStrt
+        let grpTokEnd = strlen(grpTok) + grpTokStrt
+        let grpCnum = 1 + grpTokStrt
         execute 'syntax match '.a:synGrp.'  "\%'.a:lnum.'l\&\%'.grpCnum.'c'.escape(grpTok,'~"\[]*').'" contained'
       else
-        let grpTokEnd=grpTokStrt+1
+        let grpTokEnd = grpTokStrt + 1
       endif
-      let strt=grpTokEnd
-      let grpTokStrt=match(sline,grp,strt)
+      let strt = grpTokEnd
+      let grpTokStrt = match(sline, grp, strt)
     endwhile
-    let grp=StrListTok('','g:VimrexHLgrp')
-  endwhile
-  unlet! g:VimrexHLgrp
+  endfor
 endfunction
 
 "function! vimregex#saveCurrent() "{{{1
