@@ -1,9 +1,16 @@
 " Load guard {{{1
+if v:version < 700
+  echohl ErrorMsg
+  echom 'VimRegEx requires Vim 7.0 or later.'
+  echohl None
+  finish
+endif
 if exists('g:loaded_vimregex_autoload') && !exists('g:testing_vimregex')
   finish
 endif
 let g:loaded_vimregex_autoload = 1
 
+" Variables {{{1
 let s:thisScript=expand("<sfile>:p:h:h").'/plugin/'.expand('<sfile>:t')
 let s:myName=fnamemodify(s:thisScript,":t")
 let s:inlegend=0
@@ -20,6 +27,233 @@ let s:hit=0
 let s:lline=1
 let s:lpat=''
 let s:rline=0
+
+let s:VimRegExTokBS1stChar='%|&+<=>?@ACDFHIKLMOPSUVWXZ_abcdefhiklmnoprstuvwxz()\'
+
+let s:ingroup=0
+let s:inChoice=0
+let s:inExpansion=0
+let s:charClass=
+\"
+\[:alnum:]\<NL>
+\letters and decimal digits\<NL>
+\[:alpha:]\<NL>
+\letters\<NL>
+\[:blank:]\<NL>
+\space and tab\<NL>
+\[:cntrl:]\<NL>
+\control\<NL>
+\[:digit:]\<NL>
+\decimal digits\<NL>
+\[:graph:]\<NL>
+\printable except space\<NL>
+\[:lower:]\<NL>
+\lowercase\<NL>
+\[:print:]\<NL>
+\printable including space\<NL>
+\[:punct:]\<NL>
+\punctuation\<NL>
+\[:space:]\<NL>
+\whitespace\<NL>
+\[:upper:]\<NL>
+\uppercase\<NL>
+\[:xdigit:]\<NL>
+\hexadecimal digits\<NL>
+\[:return:]\<NL>
+\carriage return (non-POSIX)\<NL>
+\[:tab:]\<NL>
+\tab (non-POSIX)\<NL>
+\[:escape:]\<NL>
+\esc (non-POSIX)\<NL>
+\[:backspace:]\<NL>
+\bs (non-POSIX)"
+
+let s:VimRegExTokOpen='$\\~^*.[]'
+let s:VimRegExTokDesc="
+      \$\<NL>
+      \end of line\<NL>
+      \*\<NL>
+      \0 or more of previous atom\<NL>
+      \.\<NL>
+      \any but newline\<NL>
+      \]\<NL>
+      \end choice list or expansion sequence\<NL>
+      \\\%[\<NL>
+      \begin expansion sequence\<NL>
+      \\\%$\<NL>
+      \end of file or string\<NL>
+      \\\&\<NL>
+      \previous atom and next atom are required together ('and')\<NL>
+      \\\|\<NL>
+      \previous atom and next atom are alternate choices ('or')\<NL>
+      \\\(\<NL>
+      \begin capture group\<NL>
+      \\\)\<NL>
+      \end group\<NL>
+      \\\%(\<NL>
+      \begin non-capture group\<NL>
+      \\\)\<NL>
+      \end group\<NL>
+      \\\%^\<NL>
+      \start of file or string\<NL>
+      \\\+\<NL>
+      \1 or more of previous atom\<NL>
+      \\\<\<NL>
+      \begin word boundary\<NL>
+      \\\=\<NL>
+      \0 or 1 of previous atom\<NL>
+      \\\>\<NL>
+      \end word boundary\<NL>
+      \\\?\<NL>
+      \0 or 1 of previous atom\<NL>
+      \\\@!\<NL>
+      \negative lookahead== previous atom present ? no match : match\<NL>
+      \\\@<!\<NL>
+      \negative lookbehind== previous atom present ? no match : match\<NL>
+      \\\@<=\<NL>
+      \positive lookbehind== previous atom present ? match : no match\<NL>
+      \\\@=\<NL>
+      \positive lookahead== previous atom present ? match : no match\<NL>
+      \\\@>\<NL>
+      \'grab all' independent subexpression\<NL>
+      \\\A\<NL>
+      \non-alpha\<NL>
+      \\\C\<NL>
+      \match case\<NL>
+      \\\D\<NL>
+      \non-digit (decimal)\<NL>
+      \\\F\<NL>
+      \non-filename non-digit (decimal)\<NL>
+      \\\H\<NL>
+      \non-head of word (alpha or _)\<NL>
+      \\\I\<NL>
+      \non-identifier non-digit (decimal)\<NL>
+      \\\K\<NL>
+      \non-keyword non-digit (decimal)\<NL>
+      \\\L\<NL>
+      \non-lowercase\<NL>
+      \\\M\<NL>
+      \magic off for following\<NL>
+      \\\O\<NL>
+      \non-digit (octal)\<NL>
+      \\\P\<NL>
+      \printable non-digit (decimal)\<NL>
+      \\\S\<NL>
+      \non-whitespace\<NL>
+      \\\U\<NL>
+      \non-uppercase\<NL>
+      \\\V\<NL>
+      \very magic off for following\<NL>
+      \\\W\<NL>
+      \non-word (alpha or decimal or _)\<NL>
+      \\\X\<NL>
+      \non-digit (hex)\<NL>
+      \\\Z\<NL>
+      \ignore Unicode combine diff\<NL>
+      \\\_\<NL>
+      \following and newline\<NL>
+      \\\_$\<NL>
+      \end of line (anywhere)\<NL>
+      \\\_.\<NL>
+      \single char or end of line\<NL>
+      \\\_^\<NL>
+      \start of line (anywhere)\<NL>
+      \\\a\<NL>
+      \alpha\<NL>
+      \\\b\<NL>
+      \backspace <BS>\<NL>
+      \\\c\<NL>
+      \ignore case\<NL>
+      \\\d\<NL>
+      \digit (decimal)\<NL>
+      \\\e\<NL>
+      \escape <Esc>\<NL>
+      \\\f\<NL>
+      \filename\<NL>
+      \\\h\<NL>
+      \head of word (alpha or _)\<NL>
+      \\\i\<NL>
+      \identifier\<NL>
+      \\\k\<NL>
+      \keyword\<NL>
+      \\\l\<NL>
+      \lowercase\<NL>
+      \\\m\<NL>
+      \magic on for following\<NL>
+      \\\n\<NL>
+      \newline (possibly combination)\<NL>
+      \\\o\<NL>
+      \digit (octal)\<NL>
+      \\\p\<NL>
+      \printable\<NL>
+      \\\r\<NL>
+      \carriage return <CR>\<NL>
+      \\\s\<NL>
+      \whitespace <Space> or <Tab>\<NL>
+      \\\t\<NL>
+      \tab <Tab>\<NL>
+      \\\u\<NL>
+      \uppercase\<NL>
+      \\\v\<NL>
+      \very magic on for following\<NL>
+      \\\w\<NL>
+      \word (alpha or decimal or _)\<NL>
+      \\\x\<NL>
+      \digit (hex)\<NL>
+      \\\ze\<NL>
+      \previous atom is end of whole match\<NL>
+      \\\zs\<NL>
+      \following is start of whole match\<NL>
+      \~\<NL>
+      \last given substitute
+      \"
+
+let s:sampleRegex1='\w\+'
+let s:sampleRegex2='[[:punct:]]\+'
+let s:sampleRegex3='\%(ABC\|abc\)\@<=\(DEF\|def\)\%(GHIJ\|ghij\)\@='
+let s:sampleRegex4='\%(ABC\|abc\)\@<=\%(DEF\|def\)\%(GHIJ\|ghij\)\@='
+let s:sampleRegex5='\%(ABC\|abc\)\@<=DEF\|def\%(GHIJ\|ghij\)\@='
+let s:sampleRegex6='" Any alpha sequence as long as it is followed by a non-vowel'
+let s:sampleRegex7='[[:alpha:]]\+\([^aeiouAEIOU]\)\@='
+let s:sampleRegex8='" A regex for email address'
+let s:sampleRegex9='\<[A-Za-z0-9._%-]\+@[A-Za-z0-9._%-]\+\.[A-Za-z]\{2,4}\>'
+let s:sampleRegex10='" Another regex for email address'
+let s:sampleRegex11='\<[[:alnum:]._%-]\+@[._%\-[:alnum:]]\+\.[[:alpha:]]\{2,4}\>'
+let s:sampleRegex12='" Yet another regex for email address'
+let s:sampleRegex13='\<\%(\w\|[.%-]\)\+@\%(\w\|[.%-]\)\+\.\w\{2,4}\>'
+let s:sampleRegex14='\<\(\w\|[.%-]\)\+@\(\w\|[.%-]\)\+\.\w\{2,4}\>'
+let s:sampleRegex15='\<\%(\w\|[.%-]\)\+@\(\w\|[.%-]\)\+\.\w\{2,4}\>'
+let s:sampleRegex16='\<\(\w\|[.%-]\)\+@\%(\w\|[.%-]\)\+\.\w\{2,4}\>'
+let s:sampleRegex17='" RTFM or Read The Fine Manual'
+let s:sampleRegex18='R\%[ead\s]T\%[he\s]F\%[ine\s]M\%[anual]'
+let s:sampleRegex19='" This allows anything printable after the "F"; or even unprintable!;)'
+let s:sampleRegex20='R\%[ead]\s*T\%[he]\s*F\p\{-}\s*M\%[anual]'
+let s:sampleRegex21='" Even more flexibility'
+let s:sampleRegex22='R\%[ea[[:alpha:]]]\s\{-}T\%[he]\s\{-}F\p\{-}\s\{-}M\%[anu]\a*'
+let s:sampleRegex23='R\%[ea\a]\s\{-}T\%[he]\s\{-}F\p\{-}\s\{-}M\%[anu]\a*'
+let s:sampleRegex24='R\%[ea\a\a]\s\{-}T\%[he]\s\{-}F\p\{-}\s\{-}M\%[anu]\a*'
+let s:sampleRegex25='" Hmm...'
+let s:sampleRegex26='\%(\<\)\@<=\%([A-Za-z0-9._%-]\+\)\%(@[A-Za-z0-9._%-]\+\.[A-Za-z]\{2,4}\>\)\@='
+let s:sampleRegex27='\%(\<[A-Za-z0-9._%-]\+@\)\@<=\%([A-Za-z0-9._%-]\+\)\%(\.[A-Za-z]\{2,4}\>\)\@='
+let s:sampleRegex28='\%(\<[A-Za-z0-9._%-]\+@[A-Za-z0-9._%-]\+\.\)\@<=\%([A-Za-z]\{2,4}\)\%(\>\)\@='
+
+let s:sampleSrc1='1 2 3 4 five six seven 8910'
+let s:sampleSrc2=" !\"#$%&'()*+,-./0123456789:;<=>?"
+let s:sampleSrc3='@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'
+let s:sampleSrc4='`abcdefghijklmnopqrstuvwxyz{|}'
+let s:sampleSrc5=' ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿'
+let s:sampleSrc6='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß'
+let s:sampleSrc7='àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ'
+let s:sampleSrc8='JoeValachi@crime.org'
+let s:sampleSrc9='LegsDiamond@crime.org'
+let s:sampleSrc10='BillGates@crime.org'
+let s:sampleSrc11='RTFM'
+let s:sampleSrc12='Read The Fine Manual'
+let s:sampleSrc13='Read The Formidable Manual'
+let s:sampleSrc14='Read The Facinating Manual'
+let s:sampleSrc15='Read The Finished Manuscript'
+let s:sampleSrc16='Reap The Future Manufacturing Benefits'
+let s:sampleSrc17='Reach The Final Manufacture Phase'
 
 if exists('g:VimrexDebug')
   command! -nargs=1 VimrexDBG :if g:VimrexDebug | call append(line('$'),<args>) | endif
@@ -1367,238 +1601,6 @@ function! vimregex#getTokDesc(pat,thePat,retPat)
   unlet! b:thisTokDescList
   return theDesc
 endfunction
-
-"if exists('loaded_regex_token_descriptions') "{{{1
-if exists('loaded_regex_token_descriptions')
-  finish
-endif
-let loaded_regex_token_descriptions=1
-let s:VimRegExTokBS1stChar='%|&+<=>?@ACDFHIKLMOPSUVWXZ_abcdefhiklmnoprstuvwxz()\'
-
-let s:ingroup=0
-let s:inChoice=0
-let s:inExpansion=0
-let s:charClass=
-\"
-\[:alnum:]\<NL>
-\letters and decimal digits\<NL>
-\[:alpha:]\<NL>
-\letters\<NL>
-\[:blank:]\<NL>
-\space and tab\<NL>
-\[:cntrl:]\<NL>
-\control\<NL>
-\[:digit:]\<NL>
-\decimal digits\<NL>
-\[:graph:]\<NL>
-\printable except space\<NL>
-\[:lower:]\<NL>
-\lowercase\<NL>
-\[:print:]\<NL>
-\printable including space\<NL>
-\[:punct:]\<NL>
-\punctuation\<NL>
-\[:space:]\<NL>
-\whitespace\<NL>
-\[:upper:]\<NL>
-\uppercase\<NL>
-\[:xdigit:]\<NL>
-\hexadecimal digits\<NL>
-\[:return:]\<NL>
-\carriage return (non-POSIX)\<NL>
-\[:tab:]\<NL>
-\tab (non-POSIX)\<NL>
-\[:escape:]\<NL>
-\esc (non-POSIX)\<NL>
-\[:backspace:]\<NL>
-\bs (non-POSIX)"
-
-let s:VimRegExTokOpen='$\\~^*.[]'
-let s:VimRegExTokDesc="
-      \$\<NL>
-      \end of line\<NL>
-      \*\<NL>
-      \0 or more of previous atom\<NL>
-      \.\<NL>
-      \any but newline\<NL>
-      \]\<NL>
-      \end choice list or expansion sequence\<NL>
-      \\\%[\<NL>
-      \begin expansion sequence\<NL>
-      \\\%$\<NL>
-      \end of file or string\<NL>
-      \\\&\<NL>
-      \previous atom and next atom are required together ('and')\<NL>
-      \\\|\<NL>
-      \previous atom and next atom are alternate choices ('or')\<NL>
-      \\\(\<NL>
-      \begin capture group\<NL>
-      \\\)\<NL>
-      \end group\<NL>
-      \\\%(\<NL>
-      \begin non-capture group\<NL>
-      \\\)\<NL>
-      \end group\<NL>
-      \\\%^\<NL>
-      \start of file or string\<NL>
-      \\\+\<NL>
-      \1 or more of previous atom\<NL>
-      \\\<\<NL>
-      \begin word boundary\<NL>
-      \\\=\<NL>
-      \0 or 1 of previous atom\<NL>
-      \\\>\<NL>
-      \end word boundary\<NL>
-      \\\?\<NL>
-      \0 or 1 of previous atom\<NL>
-      \\\@!\<NL>
-      \negative lookahead== previous atom present ? no match : match\<NL>
-      \\\@<!\<NL>
-      \negative lookbehind== previous atom present ? no match : match\<NL>
-      \\\@<=\<NL>
-      \positive lookbehind== previous atom present ? match : no match\<NL>
-      \\\@=\<NL>
-      \positive lookahead== previous atom present ? match : no match\<NL>
-      \\\@>\<NL>
-      \'grab all' independent subexpression\<NL>
-      \\\A\<NL>
-      \non-alpha\<NL>
-      \\\C\<NL>
-      \match case\<NL>
-      \\\D\<NL>
-      \non-digit (decimal)\<NL>
-      \\\F\<NL>
-      \non-filename non-digit (decimal)\<NL>
-      \\\H\<NL>
-      \non-head of word (alpha or _)\<NL>
-      \\\I\<NL>
-      \non-identifier non-digit (decimal)\<NL>
-      \\\K\<NL>
-      \non-keyword non-digit (decimal)\<NL>
-      \\\L\<NL>
-      \non-lowercase\<NL>
-      \\\M\<NL>
-      \magic off for following\<NL>
-      \\\O\<NL>
-      \non-digit (octal)\<NL>
-      \\\P\<NL>
-      \printable non-digit (decimal)\<NL>
-      \\\S\<NL>
-      \non-whitespace\<NL>
-      \\\U\<NL>
-      \non-uppercase\<NL>
-      \\\V\<NL>
-      \very magic off for following\<NL>
-      \\\W\<NL>
-      \non-word (alpha or decimal or _)\<NL>
-      \\\X\<NL>
-      \non-digit (hex)\<NL>
-      \\\Z\<NL>
-      \ignore Unicode combine diff\<NL>
-      \\\_\<NL>
-      \following and newline\<NL>
-      \\\_$\<NL>
-      \end of line (anywhere)\<NL>
-      \\\_.\<NL>
-      \single char or end of line\<NL>
-      \\\_^\<NL>
-      \start of line (anywhere)\<NL>
-      \\\a\<NL>
-      \alpha\<NL>
-      \\\b\<NL>
-      \backspace <BS>\<NL>
-      \\\c\<NL>
-      \ignore case\<NL>
-      \\\d\<NL>
-      \digit (decimal)\<NL>
-      \\\e\<NL>
-      \escape <Esc>\<NL>
-      \\\f\<NL>
-      \filename\<NL>
-      \\\h\<NL>
-      \head of word (alpha or _)\<NL>
-      \\\i\<NL>
-      \identifier\<NL>
-      \\\k\<NL>
-      \keyword\<NL>
-      \\\l\<NL>
-      \lowercase\<NL>
-      \\\m\<NL>
-      \magic on for following\<NL>
-      \\\n\<NL>
-      \newline (possibly combination)\<NL>
-      \\\o\<NL>
-      \digit (octal)\<NL>
-      \\\p\<NL>
-      \printable\<NL>
-      \\\r\<NL>
-      \carriage return <CR>\<NL>
-      \\\s\<NL>
-      \whitespace <Space> or <Tab>\<NL>
-      \\\t\<NL>
-      \tab <Tab>\<NL>
-      \\\u\<NL>
-      \uppercase\<NL>
-      \\\v\<NL>
-      \very magic on for following\<NL>
-      \\\w\<NL>
-      \word (alpha or decimal or _)\<NL>
-      \\\x\<NL>
-      \digit (hex)\<NL>
-      \\\ze\<NL>
-      \previous atom is end of whole match\<NL>
-      \\\zs\<NL>
-      \following is start of whole match\<NL>
-      \~\<NL>
-      \last given substitute
-      \"
-
-let s:sampleRegex1='\w\+'
-let s:sampleRegex2='[[:punct:]]\+'
-let s:sampleRegex3='\%(ABC\|abc\)\@<=\(DEF\|def\)\%(GHIJ\|ghij\)\@='
-let s:sampleRegex4='\%(ABC\|abc\)\@<=\%(DEF\|def\)\%(GHIJ\|ghij\)\@='
-let s:sampleRegex5='\%(ABC\|abc\)\@<=DEF\|def\%(GHIJ\|ghij\)\@='
-let s:sampleRegex6='" Any alpha sequence as long as it is followed by a non-vowel'
-let s:sampleRegex7='[[:alpha:]]\+\([^aeiouAEIOU]\)\@='
-let s:sampleRegex8='" A regex for email address'
-let s:sampleRegex9='\<[A-Za-z0-9._%-]\+@[A-Za-z0-9._%-]\+\.[A-Za-z]\{2,4}\>'
-let s:sampleRegex10='" Another regex for email address'
-let s:sampleRegex11='\<[[:alnum:]._%-]\+@[._%\-[:alnum:]]\+\.[[:alpha:]]\{2,4}\>'
-let s:sampleRegex12='" Yet another regex for email address'
-let s:sampleRegex13='\<\%(\w\|[.%-]\)\+@\%(\w\|[.%-]\)\+\.\w\{2,4}\>'
-let s:sampleRegex14='\<\(\w\|[.%-]\)\+@\(\w\|[.%-]\)\+\.\w\{2,4}\>'
-let s:sampleRegex15='\<\%(\w\|[.%-]\)\+@\(\w\|[.%-]\)\+\.\w\{2,4}\>'
-let s:sampleRegex16='\<\(\w\|[.%-]\)\+@\%(\w\|[.%-]\)\+\.\w\{2,4}\>'
-let s:sampleRegex17='" RTFM or Read The Fine Manual'
-let s:sampleRegex18='R\%[ead\s]T\%[he\s]F\%[ine\s]M\%[anual]'
-let s:sampleRegex19='" This allows anything printable after the "F"; or even unprintable!;)'
-let s:sampleRegex20='R\%[ead]\s*T\%[he]\s*F\p\{-}\s*M\%[anual]'
-let s:sampleRegex21='" Even more flexibility'
-let s:sampleRegex22='R\%[ea[[:alpha:]]]\s\{-}T\%[he]\s\{-}F\p\{-}\s\{-}M\%[anu]\a*'
-let s:sampleRegex23='R\%[ea\a]\s\{-}T\%[he]\s\{-}F\p\{-}\s\{-}M\%[anu]\a*'
-let s:sampleRegex24='R\%[ea\a\a]\s\{-}T\%[he]\s\{-}F\p\{-}\s\{-}M\%[anu]\a*'
-let s:sampleRegex25='" Hmm...'
-let s:sampleRegex26='\%(\<\)\@<=\%([A-Za-z0-9._%-]\+\)\%(@[A-Za-z0-9._%-]\+\.[A-Za-z]\{2,4}\>\)\@='
-let s:sampleRegex27='\%(\<[A-Za-z0-9._%-]\+@\)\@<=\%([A-Za-z0-9._%-]\+\)\%(\.[A-Za-z]\{2,4}\>\)\@='
-let s:sampleRegex28='\%(\<[A-Za-z0-9._%-]\+@[A-Za-z0-9._%-]\+\.\)\@<=\%([A-Za-z]\{2,4}\)\%(\>\)\@='
-
-let s:sampleSrc1='1 2 3 4 five six seven 8910'
-let s:sampleSrc2=" !\"#$%&'()*+,-./0123456789:;<=>?"
-let s:sampleSrc3='@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_'
-let s:sampleSrc4='`abcdefghijklmnopqrstuvwxyz{|}'
-let s:sampleSrc5=' ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿'
-let s:sampleSrc6='ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß'
-let s:sampleSrc7='àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ'
-let s:sampleSrc8='JoeValachi@crime.org'
-let s:sampleSrc9='LegsDiamond@crime.org'
-let s:sampleSrc10='BillGates@crime.org'
-let s:sampleSrc11='RTFM'
-let s:sampleSrc12='Read The Fine Manual'
-let s:sampleSrc13='Read The Formidable Manual'
-let s:sampleSrc14='Read The Facinating Manual'
-let s:sampleSrc15='Read The Finished Manuscript'
-let s:sampleSrc16='Reap The Future Manufacturing Benefits'
-let s:sampleSrc17='Reach The Final Manufacture Phase'
 
 "function! vimregex#doUsageSyntax() "{{{1
 function! vimregex#doUsageSyntax()
