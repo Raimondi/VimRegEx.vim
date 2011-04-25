@@ -597,7 +597,7 @@ augroup END
   call vimregex#undoGlobals()
 endfunction
 
-" Vimrex initialization function {{{1
+"vimregex#Vimrex() initialization function {{{1
 function! vimregex#Vimrex()
   call vimregex#doGlobals()
 augroup Vimrex
