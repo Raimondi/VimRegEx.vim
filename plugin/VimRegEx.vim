@@ -50,6 +50,7 @@
 "      window
 "
 
+" Commands {{{1
 command! -nargs=0 Vimrex call vimregex#Vimrex()
 command! -nargs=0 VimRegEx  if has("gui_running") | execute ':silent! :!gvim -c "let g:VimRegEx=1" -c Vimrex' | else | execute ':silent! :!vim -c "let g:VimRegEx=1" -c Vimrex' | endif
 
@@ -215,4 +216,4 @@ See:   :h tohtml, then /Remarks: (search for 'Remarks:').
 END MANUAL SECTION SEVEN
 endfunction
 
-" vim:set tw=78 et ts=2 sw=2 sts=2: {{{1
+" vim:set tw=78 et ts=8 sw=2 sts=2: {{{1
