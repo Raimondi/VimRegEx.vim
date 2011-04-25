@@ -998,19 +998,16 @@ function! vimregex#execRegex()
     endfor
   endif
   if s:AanchorPat != ''
-    let thisAnchor=StrListTok(s:AanchorPat,'b:anchors',"\<NL>")
-    while thisAnchor != ''
-      let tokenLen=strlen(token)
-      let matchAnchor=match(strpart(sline,matchPos+tokenLen),thisAnchor)
+    for thisAnchor in split(s:AanchorPat, "\<NL>")
+      let tokenLen = strlen(token)
+      let matchAnchor = match(strpart(sline, (matchPos + tokenLen)), thisAnchor)
       if matchAnchor != -1
-        let cnum=matchAnchor+matchPos+tokenLen+1
-        if cnum == (matchEnd+1)
+        let cnum = matchAnchor + matchPos + tokenLen + 1
+        if cnum == (matchEnd + 1)
           execute 'syntax match VimrexSearchAnchor  "\%'.lnum.'l\&\%'.cnum.'c'.escape(thisAnchor,'"').'"'
         endif
       endif
-      let thisAnchor=StrListTok('','b:anchors')
-    endwhile
-    unlet b:anchors
+    endfor
   endif
   execute 'syntax match VimrexSearchPattern "'.escape(pattern,'"').'" contains=VimrexSearchToken'
   let cnum=matchPos+1
