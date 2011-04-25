@@ -1345,25 +1345,25 @@ function! vimregex#getTokDesc(pat,thePat,retPat)
     endif
   endif
   while idx < lidx && !found
-    let thisPat=StrListTok(s:VimRegExTokDesc,'b:thisTokDescList',"\<NL>")
-    let matchPat=strpart(a:pat,0,idx+1)
-    while thisPat != ''
-      let theDesc=StrListTok('','b:thisTokDescList')
+    let matchPat = strpart(a:pat, 0, (idx + 1))
+    let thesePats = split(s:VimRegExTokDesc, "\<NL>")
+    let i = 1
+    let thisPat = thesePats[0]
+    while i < len(thesePats)
+      let theDesc = get(thesePats, i, '')
+      let i += 1
       if matchPat ==# '^'
-        let thisPat='^'
-        let theDesc='begin line'
-        while StrListTok('','b:thisTokDescList') != ''
-        endwhile
-        let found=1
+        let thisPat = '^'
+        let theDesc = 'begin line'
+        let found = 1
         break
       endif
       if matchPat ==# thisPat
-        while StrListTok('','b:thisTokDescList') != ''
-        endwhile
-        let found=1
+        let found = 1
         break
       endif
-      let thisPat=StrListTok('','b:thisTokDescList')
+      let thisPat = get(thesePats, i, '')
+      let i += 1
     endwhile
     let idx=idx+1
   endwhile
