@@ -1775,10 +1775,11 @@ function! vimregex#usage()
   let ZTA=vimregex#padField('l','12',g:VimrexZTA)
   let Exit=vimregex#padField('l','12',g:VimrexExit)
   wincmd t
-  call vimregex#delFile(g:VimrexUsageFile)
+  "call vimregex#delFile(g:VimrexUsageFile)
   new
   execute 'silent edit! '.escape(g:VimrexUsageFile,' ')
   setlocal noreadonly modifiable nonumber noswapfile
+  %d _
   execute 'resize '.&lines
   execute 'vertical resize '.&columns
   let lines = []
@@ -1905,7 +1906,6 @@ function! vimregex#usage()
   call add(lines,"If you find bugs, have suggestions, or just want to chat:")
   call add(lines,"http://www.vim.org/account/profile.php?user_id=5397")
   call add(lines,"You'll find my current email address there.")
-  %d _
   call append(0, lines)
   let g:lines = lines
   $d _
