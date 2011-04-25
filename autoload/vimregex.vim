@@ -1225,19 +1225,19 @@ endfunction
 
 "function! vimregex#charClassDesc(class) "{{{1
 function! vimregex#charClassDesc(class)
-  let theClass=StrListTok(s:charClass,'b:charClass',"\<NL>")
-  let found=0
+  let classList = split(s:charClass, "\<NL>")
+  let i = 1
+  let found = 0
+  let theClass = classList[0]
   while theClass != '' && !found
     if theClass ==# a:class
-      let theDesc=StrListTok('','b:charClass')
-      while StrListTok('','b:charClass') != ''
-      endwhile
-      let found=1
+      let theDesc = classList[i]
+      let found = 1
       break
     endif
-    let theClass=StrListTok('','b:charClass')
+    let theClass = classList[i]
+    let i += 1
   endwhile
-  unlet b:charClass
   if !found
     let theDesc='Unknown class'
   endif
